@@ -22,11 +22,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const authRoutes = require('./routes/authRoutes');
 const productRoutes = require('./routes/productRoutes');
 const orderRoutes = require('./routes/orderRoutes');
+const userRoutes = require('./routes/userRoutes');
 
 // Use routes
 app.use('/api', authRoutes);
 app.use('/api', productRoutes);
 app.use('/api', orderRoutes);
+app.use('/api', userRoutes);
 
 // Set up a default route
 app.get('/', (req, res) => {

@@ -1,6 +1,7 @@
 const express = require('express');
 const OrderHistory = require('../models/OrderHistory');
 const Product = require('../models/Product');
+const authenticateToken = require('../middleware/authenticateToken');
 const router = express.Router();
 
 // Add order
@@ -16,6 +17,18 @@ router.post('/order', async (req, res) => {
     const order = new OrderHistory({ userId, productId, quantity });
     await order.save();
 
+    res.json(order);
+  } catch (err) {
+    res.status(500).send('Server error');
+  }
+});
+// checkout
+
+router.post('/checkout',  async (req, res) => {
+  const { items, total, date } = req.body;
+  try {
+    const order = new OrderHistory({ items, total, date });
+    await order.save();
     res.json(order);
   } catch (err) {
     res.status(500).send('Server error');

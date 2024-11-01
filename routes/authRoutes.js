@@ -32,19 +32,19 @@ router.post('/login', async (req, res) => {
 // Register Route
 // register a new user
 router.post('/register', async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password,username , mobile, address } = req.body;
   console.log('Request body:', req.body); // Log the request body
 
   // Validate request body
-  if (!name || !email || !password) {
-    return res.status(400).json({ msg: 'Please provide name, email, and password' });
+  if (!name || !email || !password || !mobile || !address || !username) {
+    return res.status(400).json({ msg: 'Please provide name, email, password, mobile, usrename and address ' });
   }
 
   try {
     let user = await User.findOne({ email });
     if (user) return res.status(400).json({ msg: 'User already exists' });
 
-    user = new User({ name, email, password });
+    user = new User({ name, email, password,username, mobile, address });
     user.password = await bcrypt.hash(password, 10);
     await user.save();
 
