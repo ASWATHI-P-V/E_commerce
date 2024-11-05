@@ -1,20 +1,21 @@
-// orderhistoryRoutes.js
 const express = require('express');
 const router = express.Router();
-const OrderHistory = require('../models/OrderHistory'); // Assume you have created this model
+const OrderHistory = require('../models/OrderHistory');
 
-// POST endpoint to save order history
-router.post('/', async (req, res) => {
+// Route to get all order history of the user
+router.post('/orderhistory', async (req, res) => {
+  const { userId } = req.body;
+
+  if (!userId) {
+    return res.status(400).json({ error: 'User ID is required' });
+  }
+
   try {
-    const { items, total, date } = req.body;
-
-    const newOrder = new OrderHistory({ items, total, date });
-    await newOrder.save();
-
-    res.status(201).json({ msg: 'Order saved successfully' });
-  } catch (error) {
-    console.error('Error saving order:', error);
-    res.status(500).json({ msg: 'Failed to save order' });
+    const orderHistory = await OrderHistory.find({ userId });
+    res.json(orderHistory);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: 'Server error while retrieving order history' });
   }
 });
 

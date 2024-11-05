@@ -13,19 +13,29 @@ router.get('/user', authenticateToken, async (req, res) => {
     res.status(500).send('Server error');
   }
 });
-//route to update user profle
 
-router.put('/update-profile', authenticateToken, async (req, res) => {
+// Update user profile route
+router.put('/user/:id', async (req, res) => {
+  const { id } = req.params;
+  const { name, address, phone, creditCard } = req.body;
+
   try {
-    const { name, email } = req.body;
-    const user = await User.findById(req.user.userId);
-    if (!user) return res.status(404).json({ msg: 'User not found' });
-    user.name = name;
-    user.email = email;
-    await user.save();
-    res.json(user);
-  } catch (error) {
+    const updatedUser = await User.findByIdAndUpdate(
+      id,
+      { name, address, phone, creditCard },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ msg: 'User not found' });
+    }
+
+    res.json({ msg: 'Profile updated successfully', user: updatedUser });
+  } catch (err) {
+    console.error('Profile update error:', err);
     res.status(500).send('Server error');
   }
 });
+
+
 module.exports = router;
